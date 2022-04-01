@@ -1,11 +1,6 @@
-import {
-  useEffect,
-  useState,
-  useReducer,
-  useMemo,
-  useRef,
-  useCallback,
-} from "react";
+import { useState, useReducer, useMemo, useRef, useCallback } from "react";
+
+import { useCharacters } from "../hooks/useCharacters";
 
 import "../styles/Characters.css";
 
@@ -18,6 +13,8 @@ const initialState = {
 const actionType = {
   addFavorite: "ADD_TO_FAVORITE",
 };
+
+const API = "https://rickandmortyapi.com/api/character";
 
 const favoriteReducer = (state, action) => {
   switch (action.type) {
@@ -34,18 +31,13 @@ const favoriteReducer = (state, action) => {
 
 const Characters = () => {
   const [search, setSearch] = useState("");
-  const [characters, setCharacters] = useState([]);
 
   const [favorites, dispatch] = useReducer(favoriteReducer, initialState);
 
   const searchInput = useRef(null);
 
   // Metodo para consultar la API
-  useEffect(() => {
-    fetch("https://rickandmortyapi.com/api/character")
-      .then((response) => response.json())
-      .then((data) => setCharacters(data.results));
-  }, []);
+  const characters = useCharacters(API);
 
   // Metodo para agregar un personaje a favoritos con useReducer
   const handleClick = (favorite) => {
@@ -58,10 +50,10 @@ const Characters = () => {
   //   setSearch(searchInput.current.value);
   // };
 
-  const handleSearch = useCallback(() =>{
-    setSearch(searchInput.current.value)
-  }, [])
-  
+  // Metodo para detectar los caracteres tipiados por el usuario usando useCallback
+  const handleSearch = useCallback(() => {
+    setSearch(searchInput.current.value);
+  }, []);
 
   // Metodo para buscar o filtrar sin memo
   // const filteredUsers = characters.filter((user) => {
