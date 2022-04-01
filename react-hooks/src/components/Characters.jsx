@@ -1,6 +1,15 @@
-import { useEffect, useState, useReducer, useMemo, useRef } from "react";
+import {
+  useEffect,
+  useState,
+  useReducer,
+  useMemo,
+  useRef,
+  useCallback,
+} from "react";
 
 import "../styles/Characters.css";
+
+import { Search } from "./Search";
 
 const initialState = {
   favorites: [],
@@ -45,9 +54,14 @@ const Characters = () => {
   };
 
   // Metodo para detectar los caracteres tipiados por el usuario
-  const handleSearch = () => {
-    setSearch(searchInput.current.value);
-  };
+  // const handleSearch = () => {
+  //   setSearch(searchInput.current.value);
+  // };
+
+  const handleSearch = useCallback(() =>{
+    setSearch(searchInput.current.value)
+  }, [])
+  
 
   // Metodo para buscar o filtrar sin memo
   // const filteredUsers = characters.filter((user) => {
@@ -75,14 +89,11 @@ const Characters = () => {
         </li>
       ))}
 
-      <div className="search">
-        <input
-          type="text"
-          value={search}
-          ref={searchInput}
-          onChange={handleSearch}
-        />
-      </div>
+      <Search
+        search={search}
+        searchInput={searchInput}
+        handleSearch={handleSearch}
+      />
 
       {filteredUsers.map((character) => (
         <div className="infor-card" key={character.id}>
